@@ -1,0 +1,130 @@
+
+import { NotLoggedIn } from '@/components/auth/authBlock';
+import { AuthWrapper } from '@/components/auth/wrapper';
+import { Dialog } from '@/components/ui/dialog';
+import supabase from '@/lib/supabase';
+import { usePathname } from 'next/navigation';
+import React, { createContext, useState, useContext, useMemo, useEffect } from 'react';
+
+interface Auth_I {
+    handleEmailSignIn: Function,
+    handleEmailSignUp: Function,
+    handleLogout: Function,
+    user: undefined | any,
+    toggleAuthUi: Function,
+    isLoading: boolean
+}
+
+const default_vars: Auth_I = {
+    handleEmailSignIn: () => { },
+    handleEmailSignUp: () => { },
+    handleLogout: () => { },
+    user: undefined,
+    toggleAuthUi: () => { },
+    isLoading: false
+}
+
+// Create the Context
+const AuthContext = createContext(default_vars);
+
+// Create the Context Provider Component
+export const AuthProvider = ({ children }: { children: any }) => {
+    const [user, setUser] = useState<undefined | any>()
+    const [showAuthUi, toggleAuthUi] = useState<boolean>(false)
+    const [isLoading, toggleLoading] = useState(false);
+    const path = usePathname();
+    let currentSession:any;
+
+    const handleEmailSignIn = async (email: string, pwd: string) => {
+        toggleAuthUi(true)
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: pwd,
+        })
+        toggleAuthUi(false)
+        if (error) {
+            console.log(error);
+        }
+    }
+
+    const handleEmailSignUp = async (email: string, pwd: string, name: string) => {
+        toggleAuthUi(true)
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: pwd,
+            options: {
+                data: {
+                    name: name,
+                }
+            },
+        })
+        toggleAuthUi(false)
+        if (error) {
+            console.log(error);
+        }
+    }
+
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut()
+    }
+
+    const vals = useMemo(() => {
+        return ({
+            handleEmailSignIn,
+            handleEmailSignUp,
+            handleLogout,
+            user,
+            toggleAuthUi,
+            isLoading
+        })
+    }, [user])
+
+    useEffect(() => {
+        const {
+            data: { subscription }
+        } = supabase.auth.onAuthStateChange((event:any, session:any) => {
+            if (session?.user?.id == currentSession?.user?.id) return;
+            currentSession = session;
+
+            if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED')) {
+                setUser(session.user);
+            }
+
+            if (event === 'SIGNED_OUT') {
+                setUser(null);
+            }
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
+
+
+
+    return (
+        <AuthContext.Provider value={vals}>
+            {path.includes("/web/") ?
+                <>
+                    {user ?
+                        <>{children}</>
+                    :
+                        <>Loading...</>
+                    }
+                </>
+            :
+                <>
+                    {children}
+                </>
+            }
+            
+            <Dialog open={showAuthUi} onOpenChange={(open) => { toggleAuthUi(open) }}>
+                <AuthWrapper />
+            </Dialog>
+        </AuthContext.Provider>
+    );
+};
+
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
