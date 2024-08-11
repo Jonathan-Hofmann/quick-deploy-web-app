@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Base Project
+This project is meant to be used as a start for any new projects made with Next.JS, shadcn/ui and supabase (auth & database).
 
-## Getting Started
+## Using this template
+### 1. Update `.env.local` inside the root folder.
+Add or edit the `.env.local` and add the following to it.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://{YOUR-SUPABASE-ID}.supabase.co/
+NEXT_PUBLIC_SUPABASE_ANON_KEY={YOUR-SUPABASE-ANON-KEY}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Update the 'src/contexts/auth.tsx'
+Per default for `/app/...` the user needs to be authenticated. If not a fullscreen login UI will be presented.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+If a different slug should be protected just change the `PROTECTED_SLUG` variable. 
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 3. Updating the default theme
+Per default the base theme shadcn/ui and tailwindcss is using is the `zinc` colors. If you want to change that you can change the predefined colors in the `/src/app/globals.css`. 
 
-## Learn More
+A good site to create your custom theme is the [shadcn/ui themes page](https://ui.shadcn.com/themes).
 
-To learn more about Next.js, take a look at the following resources:
+## Using the Base Project
+### Using the authenticated user within the app
+Within the website you can get the current user with the following code
+```typescript
+import { useAuth } from "@/contexts/auth";
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+const Component = () => {
+    const auth = useAuth()
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    // If no user is logged in auth.user will be null else it holds the current user in the session.
+    const curr_user = auth.user;
 
-## Deploy on Vercel
+    return(
+        <p>{curr_user?.id ?? "not logged in."}</p>
+    )
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Using supabase
+If you want to use supabase in your project (for DB access and more) you should use the exported `supabase` variable from `/src/lib/supabase.ts` to access the supabase api.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contribution
+Feel free to use this base project in your future projects. 
+
+If you want to contribute to this repo just clone it and make a pull request with your changes. 
+
+And now happy coding!

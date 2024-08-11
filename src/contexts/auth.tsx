@@ -29,6 +29,9 @@ const AuthContext = createContext(default_vars);
 
 // Create the Context Provider Component
 export const AuthProvider = ({ children }: { children: any }) => {
+
+    const PROTECTED_SLUG = "/app/"
+
     const [user, setUser] = useState<undefined | any>()
     const [showAuthUi, toggleAuthUi] = useState<boolean>(false)
     const [isLoading, toggleLoading] = useState(false);
@@ -104,7 +107,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
     return (
         <AuthContext.Provider value={vals}>
-            {path.includes("/web/") ?
+            {path.includes(PROTECTED_SLUG) ?
                 <>
                     {user ?
                         <>{children}</>
