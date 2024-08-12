@@ -28,16 +28,20 @@ export const LoginUi = () => {
                     </div>
                     <div className="mt-4">
                         <Label>
-                            Passwort
+                            Password
                         </Label>
-                        <Input onKeyDown={(e)=>{
+                        <Input onKeyDown={async (e)=>{
                             if(e.key === "Enter"){
-                                auth.handleEmailSignIn(email, password)
+                                await auth.handleEmailSignIn(email, password)
+                                auth.toggleAuthUi(false)
                             }
                         }} type="password" value={password} onChange={(e)=>{setPassword(e.target.value)}}/>
                     </div>
-                    <Button className="w-full mt-6" onClick={()=>{auth.handleEmailSignIn(email, password)}}>
-                        Anmelden
+                    <Button className="w-full mt-6" onClick={async()=>{
+                        await auth.handleEmailSignIn(email, password)
+                        auth.toggleAuthUi(false)
+                    }}>
+                        Sign In
                     </Button>
                 </>
             }

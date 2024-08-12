@@ -38,8 +38,10 @@ export const Navbar = () => {
   return (
     <div className="border-b flex flex-row py-2 items-center justify-between px-4">
       <div className="w-[300px]">
-        {/* image here */}
-        <p className="font-bold">LOGO here</p>
+        <Link href="/" legacyBehavior passHref className="cursor-pointer">
+          {/* image here */}
+          <p className="font-bold">LOGO here</p>
+        </Link>
       </div>
       <NavigationMenu className="justify-end">
         <NavigationMenuList>
@@ -51,7 +53,13 @@ export const Navbar = () => {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-
+            <NavigationMenuItem>
+              <Link href="/app" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  App (protected)
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
           </div>
           <div className="flex flex-row items-center">
 
@@ -60,15 +68,9 @@ export const Navbar = () => {
       </NavigationMenu>
       <div className="w-[300px] flex flex-row justify-end">
         {!auth.user ? (
-          <>
-            <Button onClick={() => { auth.toggleAuthUi(true) }} variant="outline">Sign In</Button>
-            <Button onClick={() => { auth.toggleAuthUi(true) }} variant="outline">Register</Button>
-            <DropdownMenu>
-              <DropdownMenuContent>
-                {/* <ThemeToggle /> */}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
+          <div className="flex flex-row items-center gap-3">
+            <Button onClick={() => { auth.toggleAuthUi(true) }} variant="secondary">Sign In</Button>
+          </div>
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger>

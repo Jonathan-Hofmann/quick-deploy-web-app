@@ -10,7 +10,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://{YOUR-SUPABASE-ID}.supabase.co/
 NEXT_PUBLIC_SUPABASE_ANON_KEY={YOUR-SUPABASE-ANON-KEY}
 ```
 
-### 2. Update the 'src/contexts/auth.tsx'
+### 2. Update the `src/contexts/auth.tsx`
 Per default for `/app/...` the user needs to be authenticated. If not a fullscreen login UI will be presented.
 
 If a different slug should be protected just change the `PROTECTED_SLUG` variable. 

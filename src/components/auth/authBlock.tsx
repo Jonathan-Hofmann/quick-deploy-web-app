@@ -1,4 +1,4 @@
-
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,14 +9,17 @@ import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { Spinner } from "../utils/spinner";
 import { useAuth } from "@/contexts/auth";
+import { Spinner } from "../utils/spinner";
+import { Navbar } from "../navigation/navbar";
+import { Footer } from "../navigation/footer";
 
 export interface NotLoggedInProps {
     setMode?: Function
 }
 
 export const NotLoggedIn: React.FC<NotLoggedInProps> = (props) => {
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setLoading] = useState(false);
@@ -31,13 +34,8 @@ export const NotLoggedIn: React.FC<NotLoggedInProps> = (props) => {
     const handleBasicSignIn = async () => {
         setError({ error: false, message: "" })
         setLoading(true);
-        const resp = await auth.handleEmailSignIn({ email: email, password: password });
+        await auth.handleEmailSignIn(email, password );
 
-        if (resp.error === true) {
-            setError(resp);
-            setLoading(false)
-            return
-        }
         setLoading(false)
     }
 
@@ -69,45 +67,17 @@ export const NotLoggedIn: React.FC<NotLoggedInProps> = (props) => {
 
     return (
         <div>
-            {/* <NextSeo
-                title={"Willkommen in der ArtSlide | App"}
-                description={"Melde Dich an, um die ArtSlide App zu öffnen und Dein volles künstlerisches Potential zu entfalten."}
-                canonical={"https://www.artslide.co/app"}
-                openGraph={{
-                    url: "https://www.artslide.co/app",
-                    title: "Willkommen in der ArtSlide | App",
-                    description: "Melde Dich an, um die ArtSlide App zu öffnen und Dein volles künstlerisches Potential zu entfalten.",
-                    site_name: 'ArtSlide | App',
-                }}
-            /> */}
-            <div className="grid lg:grid-cols-2">
-                <div className="hidden lg:block relative bg-zinc-100 dark:bg-zinc-950 h-screen">
-                    <Image
+            <Navbar/>
+            <div className="grid lg:grid-cols-2 h-[calc(100vh_-_60px)]">
+                <div className="hidden lg:block relative bg-zinc-100 dark:bg-zinc-950 ">
+                    <img
                         alt={'Login Image'}
-                        src={''}
-                        layout='fill'
-                        objectFit='cover'
+                        src={'https://images.unsplash.com/photo-1715331999602-fc92b7eb975e?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
+                        className=" object-cover w-full max-h-[calc(100vh_-_60px)]"
                     />
                 </div>
-                <div className="h-screen relative flex flex-col justify-center">
+                <div className="relative flex flex-col justify-center">
                     <div className="w-[90vw] sm:w-[50vw] lg:w-[40vw] lg:max-w-[600px] mb:bg-red-500 mx-auto">
-                        <div className="absolute top-8 left-8">
-                            <Image
-                                alt={'Logo'}
-                                src={'/media/logo/logo_white.svg'}
-                                height={40}
-                                width={163}
-                                className="hidden dark:block mb-16"
-                            />
-                            
-                            <Image
-                                alt={'Logo'}
-                                src={'/media/logo/logo_black.svg'}
-                                height={40}
-                                width={163}
-                                className="block dark:hidden"
-                            />
-                        </div>
                         {error.error===true &&
                             <Alert className="mb-6">
                                 <BsExclamationTriangle className="h-4 w-4" />
@@ -132,7 +102,7 @@ export const NotLoggedIn: React.FC<NotLoggedInProps> = (props) => {
                                     <Input type="email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} placeholder="max.mustermann@mail.com" />
                                     <Input type="password" value={password} onChange={(e) => setPassword(e.currentTarget.value)} placeholder={"Your password here"} />
                                 </div>
-                                <Button onClick={()=>handleBasicSignIn()} disabled={email.length === 0 || password.length === 0} className="w-full mb-4">
+                                <Button onClick={()=>handleBasicSignIn()} className="w-full mb-4">
                                     Sign In
                                 </Button>
                             </>
@@ -141,6 +111,7 @@ export const NotLoggedIn: React.FC<NotLoggedInProps> = (props) => {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </div>
     )
 }

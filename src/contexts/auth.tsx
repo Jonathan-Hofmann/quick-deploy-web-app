@@ -1,4 +1,4 @@
-
+"use client"
 import { NotLoggedIn } from '@/components/auth/authBlock';
 import { AuthWrapper } from '@/components/auth/wrapper';
 import { Dialog } from '@/components/ui/dialog';
@@ -30,7 +30,7 @@ const AuthContext = createContext(default_vars);
 // Create the Context Provider Component
 export const AuthProvider = ({ children }: { children: any }) => {
 
-    const PROTECTED_SLUG = "/app/"
+    const PROTECTED_SLUG = "/app"
 
     const [user, setUser] = useState<undefined | any>()
     const [showAuthUi, toggleAuthUi] = useState<boolean>(false)
@@ -39,19 +39,21 @@ export const AuthProvider = ({ children }: { children: any }) => {
     let currentSession:any;
 
     const handleEmailSignIn = async (email: string, pwd: string) => {
-        toggleAuthUi(true)
+        toggleLoading(true)
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: pwd,
         })
-        toggleAuthUi(false)
+        toggleLoading(false)
         if (error) {
             console.log(error);
+        } else {
+            return;
         }
     }
 
     const handleEmailSignUp = async (email: string, pwd: string, name: string) => {
-        toggleAuthUi(true)
+        toggleLoading(true)
         const { data, error } = await supabase.auth.signUp({
             email: email,
             password: pwd,
@@ -61,7 +63,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
                 }
             },
         })
-        toggleAuthUi(false)
+        toggleLoading(false)
         if (error) {
             console.log(error);
         }
@@ -112,7 +114,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
                     {user ?
                         <>{children}</>
                     :
-                        <>Loading...</>
+                        <NotLoggedIn/>
                     }
                 </>
             :

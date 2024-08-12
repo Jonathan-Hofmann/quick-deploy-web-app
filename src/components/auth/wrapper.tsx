@@ -12,7 +12,7 @@ export const AuthWrapper = () => {
     return (
         <DialogContent>
 
-            <p className="text-2xl font-bold">PfandSpot</p>
+            <p className="text-2xl font-bold">Hey there!</p>
 
             {authMode === "signin" && <LoginUi />}
             {authMode === "signup" && <RegisterUi />}
@@ -21,12 +21,12 @@ export const AuthWrapper = () => {
                 <>
                     {authMode === "signin" && 
                         <Button variant={"link"} onClick={()=>{setAuthMode("signup")}}>
-                            Noch keinen Account?
+                            No Account yet?
                         </Button>
                     }
                     {authMode === "signup" && 
                         <Button variant={"link"} onClick={()=>{setAuthMode("signin")}}>
-                            Hier anmelden
+                            Sign in here
                         </Button>
                     }
                 </>
